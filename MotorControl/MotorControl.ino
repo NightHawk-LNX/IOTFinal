@@ -74,13 +74,14 @@ void callback(char* topic, byte* payload, unsigned int length)
   // publish a status update
   mqttClient.publish("motor/status", jsonBuffer);
 }
+} 
 
 // Connect to the WiFi network
 void reconnectWiFi()
 {
   Serial.println();
   Serial.print("Connecting to network: ");
-  Serial.println(ssid);
+  Serial.println("VMI-Sentinel");
   WiFi.disconnect(true);  //disconnect form wifi to set new wifi connection
   WiFi.mode(WIFI_STA); //init wifi mode
 

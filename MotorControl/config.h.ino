@@ -5,7 +5,7 @@ const char* identity = "housandnj21";
 const char* password = "This is so pointless";
 
 // Edit the following for the network you are using
-const char* ssid = "Barracks-Secure";
+const char* ssid = "VMI-Sentinel";
 
 // AWS custom endpoint -- edit to use your endpoint
 static const char AWS_ENDPOINT[ ] = "a32a8ixqt216yg-ats.iot.us-east-2.amazonaws.com";
