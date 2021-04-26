@@ -92,12 +92,12 @@ do2D/hwLHQqIH956ogU393UPEQq0iCnGcHrAF/bdBJTQ+modb8RPcA==
 )KEY";
 
 // MQTT topics
-static const char CMD_TOPIC[ ] = "nfc_lock/cmd";
-static const char STATUS_TOPIC[ ] = "nfc_lock/status";
+static const char CMD_TOPIC[ ] = "Motor/cmd";
+static const char STATUS_TOPIC[ ] = "Motor/status";
 
 // AWS device name
 static const char THINGNAME[] = "EE419_ESP";
 
 // LEDs -- change these if you used different I/O pins
-const int red = 12;
-const int green = 13;
+const int forward = 12;
+const int reverse = 13;

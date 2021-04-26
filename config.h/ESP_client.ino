@@ -34,38 +34,42 @@ void callback(char* topic, byte* payload, unsigned int length)
   Serial.print(" payload: ");
   Serial.println(jsonBuffer);
 
-  if(strstr(jsonBuffer,"unlock"))
+  if(strstr(jsonBuffer,"forward"))                        ////////spin motors forward
   {
-  digitalWrite(32,HIGH);
-  // build a response
-  getLocalTime(&timeinfo);
-  xmtMsg["timestamp"] = asctime(&timeinfo);
-  xmtMsg["state"] = "unlocked";
-  serializeJson(xmtMsg, jsonBuffer);
-
-  // publish a status update
-  mqttClient.publish("nfc_lock/status", jsonBuffer);
-  delay(5000);
-  digitalWrite(32,LOW);
-   getLocalTime(&timeinfo);
-  xmtMsg["timestamp"] = asctime(&timeinfo);
-  xmtMsg["state"] = "locked";
-  serializeJson(xmtMsg, jsonBuffer);
-  mqttClient.publish("nfc_lock/status", jsonBuffer);
+    digitalWrite(reverse,LOW);
+    digitalWrite(forward,HIGH);
+    // build a response
+    getLocalTime(&timeinfo);
+    xmtMsg["timestamp"] = asctime(&timeinfo);
+    xmtMsg["state"] = "moving forward";
+    serializeJson(xmtMsg, jsonBuffer);
+    mqttClient.publish("Motor/status", jsonBuffer);
   }
-  else{
-    digitalWrite(14,HIGH);
-    delay(200);
-    digitalWrite(14,LOW);
-    delay(200);
-    digitalWrite(14,HIGH);
-    delay(200);
-    digitalWrite(14,LOW);
-    delay(200);
-    digitalWrite(14,HIGH);
-    delay(200);
-    digitalWrite(14,LOW);
+  if(strstr(jsonBuffer,"reverse"))                        ///////////spin motors in reverse
+  {
+    digitalWrite(forward,LOW);
+    digitalWrite(reverse,HIGH);
+    // publish a status update
+    mqttClient.publish("Motor/status", jsonBuffer);
+ 
+     getLocalTime(&timeinfo);
+    xmtMsg["timestamp"] = asctime(&timeinfo);
+    xmtMsg["state"] = "moving in reverse";
+    serializeJson(xmtMsg, jsonBuffer);
+    mqttClient.publish("Motor/status", jsonBuffer);
+  } 
+   if(strstr(jsonBuffer,"forward"))                        ////////stop motors
+  {
+    digitalWrite(reverse,LOW);
+    digitalWrite(forward,LOW);
+    // build a response
+    getLocalTime(&timeinfo);
+    xmtMsg["timestamp"] = asctime(&timeinfo);
+    xmtMsg["state"] = "moving forward";
+    serializeJson(xmtMsg, jsonBuffer);
+    mqttClient.publish("Motor/status", jsonBuffer);
   }
+ 
 }
 
 // Connect to the WiFi network
@@ -154,12 +158,12 @@ void setup() {
   delay(10);
 
   // configure IO pins
-  pinMode(14, OUTPUT);
-  pinMode(32, OUTPUT);
+  pinMode(forward, OUTPUT);
+  pinMode(reverse, OUTPUT);
 
   // turn LEDs off
-  digitalWrite(14, LOW);
-  digitalWrite(32, LOW);
+  digitalWrite(forward, LOW);
+  digitalWrite(reverse, LOW);
 
   // connect to wifi
   reconnectWiFi();
