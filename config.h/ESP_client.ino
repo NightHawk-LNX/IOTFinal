@@ -34,54 +34,46 @@ void callback(char* topic, byte* payload, unsigned int length)
   Serial.print(" payload: ");
   Serial.println(jsonBuffer);
 
-  if(strstr(jsonBuffer,"forward"))                         ////////////////////////////spin motors forward
+  if(strstr(jsonBuffer,"unlock"))
   {
-  digitalWrite(14,LOW);
   digitalWrite(32,HIGH);
   // build a response
   getLocalTime(&timeinfo);
   xmtMsg["timestamp"] = asctime(&timeinfo);
-  xmtMsg["state"] = "moving forward";
+  xmtMsg["state"] = "unlocked";
   serializeJson(xmtMsg, jsonBuffer);
 
   // publish a status update
-  mqttClient.publish("motor/status", jsonBuffer);
+  mqttClient.publish("nfc_lock/status", jsonBuffer);
+  delay(5000);
+  digitalWrite(32,LOW);
+   getLocalTime(&timeinfo);
+  xmtMsg["timestamp"] = asctime(&timeinfo);
+  xmtMsg["state"] = "locked";
+  serializeJson(xmtMsg, jsonBuffer);
+  mqttClient.publish("nfc_lock/status", jsonBuffer);
   }
-   if(strstr(jsonBuffer,"reverse"))                         ////////////////////////////spin motors in reverse
-  {
-  digitalWrite(32,LOW);
-  digitalWrite(14,HIGH);
-  
-  // build a response
-  getLocalTime(&timeinfo);
-  xmtMsg["timestamp"] = asctime(&timeinfo);
-  xmtMsg["state"] = "spinning in reverse";
-  serializeJson(xmtMsg, jsonBuffer);
-
-  // publish a status update
-  mqttClient.publish("motor/status", jsonBuffer);
+  else{
+    digitalWrite(14,HIGH);
+    delay(200);
+    digitalWrite(14,LOW);
+    delay(200);
+    digitalWrite(14,HIGH);
+    delay(200);
+    digitalWrite(14,LOW);
+    delay(200);
+    digitalWrite(14,HIGH);
+    delay(200);
+    digitalWrite(14,LOW);
+  }
 }
- if(strstr(jsonBuffer,"reverse"))                         ////////////////////////////stop motors
-  {
-  digitalWrite(32,LOW);
-  digitalWrite(14,LOW);
-  // build a response
-  getLocalTime(&timeinfo);
-  xmtMsg["timestamp"] = asctime(&timeinfo);
-  xmtMsg["state"] = "stopped";
-  serializeJson(xmtMsg, jsonBuffer);
-
-  // publish a status update
-  mqttClient.publish("motor/status", jsonBuffer);
-}
-} 
 
 // Connect to the WiFi network
 void reconnectWiFi()
 {
   Serial.println();
   Serial.print("Connecting to network: ");
-  Serial.println("VMI-Sentinel");
+  Serial.println(ssid);
   WiFi.disconnect(true);  //disconnect form wifi to set new wifi connection
   WiFi.mode(WIFI_STA); //init wifi mode
 
@@ -190,13 +182,5 @@ void loop() {
 
   // handle any mqtt traffic
   mqttClient.loop();
-
-}void setup() {
-  // put your setup code here, to run once:
-
-}
-
-void loop() {
-  // put your main code here, to run repeatedly:
 
 }

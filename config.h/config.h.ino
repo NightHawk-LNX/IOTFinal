@@ -92,8 +92,8 @@ do2D/hwLHQqIH956ogU393UPEQq0iCnGcHrAF/bdBJTQ+modb8RPcA==
 )KEY";
 
 // MQTT topics
-static const char CMD_TOPIC[ ] = "motor/cmd";
-static const char STATUS_TOPIC[ ] = "motor/status";
+static const char CMD_TOPIC[ ] = "nfc_lock/cmd";
+static const char STATUS_TOPIC[ ] = "nfc_lock/status";
 
 // AWS device name
 static const char THINGNAME[] = "EE419_ESP";
